@@ -109,7 +109,7 @@ export function parse(this: Eta, str: string): Array<AstObject> {
   );
 
   const parseCloseReg = new RegExp(
-    "'|\"|`|\\/\\*|(\\s*(-|_)?" + escapeRegExp(config.tags[1]) + ")",
+    "'|\"|`|\\/\\*|\\/\\/|(\\s*(-|_)?" + escapeRegExp(config.tags[1]) + ")",
     "g",
   );
 
@@ -161,6 +161,13 @@ export function parse(this: Eta, str: string): Array<AstObject> {
             ParseErr("unclosed comment", str, closeTag.index);
           }
           parseCloseReg.lastIndex = commentCloseInd;
+        } else if (char === "//") {
+          const commentCloseInd = str.indexOf("\n", parseCloseReg.lastIndex);
+          if (commentCloseInd === -1) {
+            parseCloseReg.lastIndex = str.length;
+          } else {
+            parseCloseReg.lastIndex = commentCloseInd;
+          }
         } else if (char === "'") {
           singleQuoteReg.lastIndex = closeTag.index;
 
