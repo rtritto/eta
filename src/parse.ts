@@ -162,11 +162,15 @@ export function parse(this: Eta, str: string): Array<AstObject> {
           }
           parseCloseReg.lastIndex = commentCloseInd;
         } else if (char === "//") {
-          const commentCloseInd = str.indexOf("\n", parseCloseReg.lastIndex);
-          if (commentCloseInd === -1) {
-            parseCloseReg.lastIndex = str.length;
+          const lineTerminatorRegex = /[\n\r\u2028\u2029]/g;
+          lineTerminatorRegex.lastIndex = parseCloseReg.lastIndex;
+          const match = lineTerminatorRegex.exec(str);
+          if (match) {
+            parseCloseReg.lastIndex =
+              match.index +
+              (match[0] === "\r" && str[match.index + 1] === "\n" ? 2 : 1);
           } else {
-            parseCloseReg.lastIndex = commentCloseInd;
+            parseCloseReg.lastIndex = str.length;
           }
         } else if (char === "'") {
           singleQuoteReg.lastIndex = closeTag.index;
