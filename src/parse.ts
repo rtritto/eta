@@ -19,7 +19,7 @@ const singleQuoteReg = /'(?:\\[\s\w"'\\`]|[^\n\r'\\])*?'/g;
 
 const doubleQuoteReg = /"(?:\\[\s\w"'\\`]|[^\n\r"\\])*?"/g;
 
-const lineTerminatorReg = /[\n\r\u2028\u2029]/g;
+const lineTerminatorReg = /(?:\r\n|[\n\r\u2028\u2029])/g;
 
 /** Escape special regular expression characters inside a string */
 
@@ -167,9 +167,7 @@ export function parse(this: Eta, str: string): Array<AstObject> {
           lineTerminatorReg.lastIndex = parseCloseReg.lastIndex;
           const match = lineTerminatorReg.exec(str);
           if (match) {
-            parseCloseReg.lastIndex =
-              match.index +
-              (match[0] === "\r" && str[match.index + 1] === "\n" ? 2 : 1);
+            parseCloseReg.lastIndex = match.index + match[0].length;
           } else {
             parseCloseReg.lastIndex = str.length;
           }
