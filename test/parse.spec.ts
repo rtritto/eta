@@ -34,6 +34,22 @@ describe("parse test", () => {
     ]);
   });
 
+  it("works with unpaired apostrophe in single-line comment", () => {
+    const buff = eta.parse("hi <% // comment with unpaired apostrophe' \n %>");
+    expect(buff).toEqual([
+      "hi ",
+      { val: "// comment with unpaired apostrophe' \n ", t: "e" },
+    ]);
+  });
+
+  it("works with unpaired apostrophe in multiline comment", () => {
+    const buff = eta.parse("hi <% /* comment with unpaired apostrophe' */ %>");
+    expect(buff).toEqual([
+      "hi ",
+      { val: "/* comment with unpaired apostrophe' */ ", t: "e" },
+    ]);
+  });
+
   it("parses with simple template literal", () => {
     // biome-ignore lint/suspicious/noTemplateCurlyInString: intentional
     const buff = eta.parse("hi <%= `template %> ${value}` %>");
