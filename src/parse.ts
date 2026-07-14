@@ -111,7 +111,9 @@ export function parse(this: Eta, str: string): Array<AstObject> {
   );
 
   const parseCloseReg = new RegExp(
-    "'|\"|`|\\/\\*|\\/\\/|(\\s*(-|_)?" + escapeRegExp(config.tags[1]) + ")",
+    "'|\"|`|\\/\\*|(\\s*(-|_)?" +
+      escapeRegExp(config.tags[1]) +
+      ")|\\/\\/",
     "g",
   );
 
